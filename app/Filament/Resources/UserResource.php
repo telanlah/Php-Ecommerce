@@ -27,24 +27,29 @@ class UserResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-user-group';
 
+    protected static ?string $recordTitleAttribute = 'name';
+
+    // mengurutkan navigasi berdasarkan nomor 
+    protected static ?int $navigationSort = 1;
+
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 TextInput::make('name')->required(),
                 TextInput::make('email')
-                ->label('Email Address')
-                ->email()
-                ->maxLength(255)
-                ->unique(ignoreRecord: true)
-                ->required(),
+                    ->label('Email Address')
+                    ->email()
+                    ->maxLength(255)
+                    ->unique(ignoreRecord: true)
+                    ->required(),
                 DateTimePicker::make('email_verified_at')
-                ->label('Email Verified At')
-                ->default(now()),
+                    ->label('Email Verified At')
+                    ->default(now()),
                 TextInput::make('password')
-                ->password()
-                ->dehydrated(fn($state) => filled($state))
-                ->required(fn (Page $livewire): bool => $livewire instanceof CreateRecord),
+                    ->password()
+                    ->dehydrated(fn($state) => filled($state))
+                    ->required(fn(Page $livewire): bool => $livewire instanceof CreateRecord),
 
             ]);
     }
@@ -54,28 +59,28 @@ class UserResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('name')
-                ->searchable(),
+                    ->searchable(),
                 TextColumn::make('email')
-                ->searchable(),
+                    ->searchable(),
                 TextColumn::make('email_verified_at')
-                ->dateTime()
-                ->sortable(),
+                    ->dateTime()
+                    ->sortable(),
                 TextColumn::make('created_at')
-                ->dateTime()
-                ->sortable(),
+                    ->dateTime()
+                    ->sortable(),
             ])
             ->filters([
                 //
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                    Tables\Actions\ViewAction::make(),
+                    Tables\Actions\EditAction::make(),
+                    Tables\Actions\DeleteAction::make(),
                 ])
-                ])
+            ])
 
-                
+
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
@@ -88,6 +93,10 @@ class UserResource extends Resource
         return [
             OrdersRelationManager::class
         ];
+    }
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['name', 'email'];
     }
 
     public static function getPages(): array
